@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const { userRegister } = require("./controllers/user.controller.js");
 
 app.use(
   cors({
@@ -13,5 +14,8 @@ app.use(cookieParser({}));
 app.use(express.json({ limit: "24kb" }));
 app.use(express.urlencoded({ extended: true, limit: "24kb" }));
 app.use(express.static("public"));
+
+//import routes
+app.use("/api/v1/users", userRegister);
 
 module.exports = { app };
