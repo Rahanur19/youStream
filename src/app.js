@@ -16,6 +16,7 @@ app.use(express.urlencoded({ extended: true, limit: "24kb" }));
 app.use(express.static("public"));
 
 //import routes
-app.use("/api/v1/users", userRegister);
+const userRoutes = require("./routes/user.routes.js");
+app.use("/api/v1/users", userRoutes);
 
 module.exports = { app };
