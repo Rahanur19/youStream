@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const { userRegister } = require("./controllers/user.controller.js");
 
 app.use(
   cors({
