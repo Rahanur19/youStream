@@ -11,6 +11,7 @@ const {
   userRegister,
   userLogin,
   userLogout,
+  resetAccessToken,
 } = require("../controllers/user.controller.js");
 
 // User routes
@@ -24,6 +25,9 @@ router.post(
 );
 
 router.post("/login", userLogin);
+
+//secured routes
 router.post("/logout", verifyJWT, userLogout);
+router.post("/refresh-token", resetAccessToken);
 
 module.exports = router;
