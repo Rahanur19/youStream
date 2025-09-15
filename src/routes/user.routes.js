@@ -51,7 +51,7 @@ router.patch(
   updateUserAvatar
 );
 
-router.get("/channel/:username", verifyJWT, getChannelDetails);
+router.get("/channel/:userName", verifyJWT, getChannelDetails);
 router.get("/watch-history", verifyJWT, getWatchHistory);
 module.exports = router;
 

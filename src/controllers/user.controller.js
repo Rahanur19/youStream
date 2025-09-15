@@ -1,6 +1,8 @@
 const User = require("../models/user.model.js");
 const { ApiError } = require("../utils/ApiError.js");
 const { ApiResponse } = require("../utils/ApiResponse.js");
+const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 const { asyncHandler } = require("../utils/asyncHandler.js");
 const cloudinaryFileUp = require("../utils/cloudinaryFileUp.js");
 const {
@@ -109,6 +111,9 @@ const userLogin = asyncHandler(async (req, res) => {
     user._id
   );
 
+  user.refreshToken = refreshToken;
+  await user.save({ validationBeforeSave: false });
+
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
@@ -158,13 +163,14 @@ const resetAccessToken = asyncHandler(async (req, res) => {
     incomingRefreshToken,
     process.env.REFRESH_TOKEN_SECRET
   );
-  const user = await User.findById(decoded?._id).select(
-    "-password -refreshToken"
-  );
+  const user = await User.findById(decoded?._id).select("-password");
 
   if (!user) {
     throw new ApiError(404, "Invalid token, user not found");
   }
+
+  console.log("incomingRefreshToken", incomingRefreshToken);
+  console.log("user.refreshToken", user.refreshToken);
 
   if (incomingRefreshToken !== user.refreshToken) {
     throw new ApiError(401, "Unauthorized access, invalid refresh token");
@@ -224,7 +230,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 const updateUserProfile = asyncHandler(async (req, res) => {
   const { fullName, userName, email } = req.body;
   if ([fullName, userName, email].some((element) => element?.trim() === "")) {
-    throw new ApiError(400, "All input fields are required");
+    throw new ApiError(400, "All input field is required");
   }
 
   const user = await User.findByIdAndUpdate(
@@ -356,7 +362,7 @@ const getChannelDetails = asyncHandler(async (req, res) => {
 const getWatchHistory = asyncHandler(async (req, res) => {
   const user = await User.aggregate([
     {
-      $match: { _id: mongoose.Types.ObjectId(req.user._id) },
+      $match: { _id: new mongoose.Types.ObjectId(req.user._id) },
     },
     {
       $lookup: {
@@ -366,7 +372,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
         as: "watchHistory",
         pipeline: [
           {
-            lookup: {
+            $lookup: {
               from: "users",
               localField: "owner",
               foreignField: "_id",

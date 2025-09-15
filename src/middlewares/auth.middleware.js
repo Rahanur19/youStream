@@ -10,7 +10,7 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
       req.header("Authorization")?.replace("Bearer ", "");
 
     if (!token) {
-      throw new ApiError(401, "Unauthorized access, no token provided");
+      throw new ApiError(401, "Unauthorized access, no token found");
     }
 
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
