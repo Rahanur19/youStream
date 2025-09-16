@@ -12,6 +12,7 @@ const {
   createVideo,
   updateVideoById,
   deleteVideoById,
+  togglePublishButton,
 } = require("../controllers/video.controller.js");
 
 // Video routes
@@ -38,5 +39,6 @@ Router.put(
 );
 
 Router.delete("/delete-video/:videoId", verifyJWT, deleteVideoById);
+Router.patch("/toggle-publish/:videoId", verifyJWT, togglePublishButton);
 
 module.exports = Router;

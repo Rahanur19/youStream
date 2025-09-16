@@ -203,10 +203,32 @@ const deleteVideoById = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Video deleted successfully", deletedVideo));
 });
 
+const togglePublishButton = asyncHandler(async (req, res) => {
+  //   res.send("Toggle publish button endpoint is under construction");
+  const videoId = req.params.videoId;
+  if (!videoId) {
+    throw new ApiError(400, "Video ID is required");
+  }
+  const video = await Video.findById(videoId);
+  if (!video) {
+    throw new ApiError(404, "Video not found");
+  }
+  if (video.owner.toString() !== req.user._id.toString()) {
+    throw new ApiError(403, "You are not authorized to update this video");
+  }
+
+  video.isPublished = !video.isPublished;
+  const updatedVideo = await video.save({ validationBeforeSave: false });
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Video publish status toggled", updatedVideo));
+});
+
 module.exports = {
   getAllVideos,
   getVideoById,
   createVideo,
   updateVideoById,
   deleteVideoById,
+  togglePublishButton,
 };
