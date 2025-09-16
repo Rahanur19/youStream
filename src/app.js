@@ -16,6 +16,10 @@ app.use(express.static("public"));
 
 //import routes
 const userRoutes = require("./routes/user.routes.js");
+const videoRoutes = require("./routes/video.routes.js");
+
+//routes
+app.use("/api/v1/videos", videoRoutes);
 app.use("/api/v1/users", userRoutes);
 
 module.exports = { app };
