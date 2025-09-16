@@ -1,5 +1,4 @@
 const express = require("express");
-const { ApiResponse } = require("../utils/ApiResponse.js");
 const router = express.Router();
 
 // Importing middlewares
