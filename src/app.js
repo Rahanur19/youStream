@@ -19,11 +19,13 @@ const userRoutes = require("./routes/user.routes.js");
 const videoRoutes = require("./routes/video.routes.js");
 const likeRoutes = require("./routes/like.routes.js");
 const communityPostRoutes = require("./routes/communityPost.routes.js");
+const playlistRoutes = require("./routes/playlist.routes.js");
 
 //routes
 app.use("/api/v1/videos", videoRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/likes", likeRoutes);
 app.use("/api/v1/community-posts", communityPostRoutes);
+app.use("/api/v1/playlists", playlistRoutes);
 
 module.exports = { app };

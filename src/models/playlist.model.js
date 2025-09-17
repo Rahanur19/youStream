@@ -1,10 +1,13 @@
 const mongoose = require("mongoose");
 
-const likeSchema = new mongoose.Schema(
+const playlistSchema = new mongoose.Schema(
   {
-    title: {
+    name: {
       type: String,
+      trim: true,
       required: true,
+      minlength: [3, "Playlist name must be at least 3 characters long"],
+      maxlength: [50, "Playlist name must not exceed 50 characters"],
     },
 
     description: {
@@ -28,4 +31,4 @@ const likeSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Like", likeSchema);
+module.exports = mongoose.model("Playlist", playlistSchema);
