@@ -1,7 +1,7 @@
 const { ApiError } = require("../utils/ApiError.js");
 const { ApiResponse } = require("../utils/ApiResponse.js");
 const { asyncHandler } = require("../utils/asyncHandler.js");
-const Video = require("../models/video.model.js");
+const Like = require("../models/like.model.js");
 const CommunityPost = require("../models/communityPost.model.js");
 const Comment = require("../models/comment.model.js");
 const mongoose = require("mongoose");
@@ -84,8 +84,9 @@ const deletePostById = asyncHandler(async (req, res) => {
     throw new ApiError(403, "You are not authorized to delete this post");
   }
   await post.deleteOne();
-  // Also delete all comments associated with this post
+  // Also delete all likes and comments associated with this post
   await Comment.deleteMany({ communityPost: postId });
+  await Like.deleteMany({ communityPost: postId });
   res
     .status(200)
     .json(new ApiResponse(200, "Community post deleted successfully", null));

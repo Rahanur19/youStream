@@ -21,6 +21,7 @@ const likeRoutes = require("./routes/like.routes.js");
 const communityPostRoutes = require("./routes/communityPost.routes.js");
 const playlistRoutes = require("./routes/playlist.routes.js");
 const subscriptionRoutes = require("./routes/subscription.routes.js");
+const comments = require("./routes/comment.routes.js");
 
 //routes
 app.use("/api/v1/videos", videoRoutes);
@@ -29,5 +30,6 @@ app.use("/api/v1/likes", likeRoutes);
 app.use("/api/v1/community-posts", communityPostRoutes);
 app.use("/api/v1/playlists", playlistRoutes);
 app.use("/api/v1/subscriptions", subscriptionRoutes);
+app.use("/api/v1/comments", comments);
 
 module.exports = { app };

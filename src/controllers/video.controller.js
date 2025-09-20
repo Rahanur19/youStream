@@ -2,6 +2,8 @@ const { ApiError } = require("../utils/ApiError.js");
 const { ApiResponse } = require("../utils/ApiResponse.js");
 const { asyncHandler } = require("../utils/asyncHandler.js");
 const Video = require("../models/video.model.js");
+const Comment = require("../models/comment.model.js");
+const Like = require("../models/like.model.js");
 const cloudinaryFileUp = require("../utils/cloudinaryFileUp.js");
 const cloudinaryFileDeleteById = require("../utils/cloudinaryFileDeleteById.js");
 
@@ -191,6 +193,10 @@ const deleteVideoById = asyncHandler(async (req, res) => {
       "image"
     );
   }
+
+  //delete all comment and likes associated with this video
+  await Comment.deleteMany({ video: videoId });
+  await Like.deleteMany({ video: videoId });
 
   // Delete video document from database
   const deletedVideo = await video.deleteOne();
