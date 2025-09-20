@@ -85,8 +85,10 @@ const deletePostById = asyncHandler(async (req, res) => {
   }
   await post.deleteOne();
   // Also delete all likes and comments associated with this post
-  await Comment.deleteMany({ communityPost: postId });
   await Like.deleteMany({ communityPost: postId });
+  await Comment.deleteMany({ communityPost: postId });
+  // delete all likes associted with this comment
+  // await Like.deleteMany({ ??});
   res
     .status(200)
     .json(new ApiResponse(200, "Community post deleted successfully", null));

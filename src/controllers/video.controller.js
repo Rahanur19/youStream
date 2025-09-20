@@ -195,8 +195,10 @@ const deleteVideoById = asyncHandler(async (req, res) => {
   }
 
   //delete all comment and likes associated with this video
-  await Comment.deleteMany({ video: videoId });
   await Like.deleteMany({ video: videoId });
+  await Comment.deleteMany({ video: videoId });
+  // delete all likes associted with this comment
+  // await Like.deleteMany({ ??});
 
   // Delete video document from database
   const deletedVideo = await video.deleteOne();
