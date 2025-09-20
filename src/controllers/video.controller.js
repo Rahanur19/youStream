@@ -6,6 +6,7 @@ const Comment = require("../models/comment.model.js");
 const Like = require("../models/like.model.js");
 const cloudinaryFileUp = require("../utils/cloudinaryFileUp.js");
 const cloudinaryFileDeleteById = require("../utils/cloudinaryFileDeleteById.js");
+const { single } = require("../middlewares/multer.middleware.js");
 
 // Function to extract public_id from Cloudinary URL
 // Example URL: https://res.cloudinary.com/<cloud_name>/video/upload/v1699999999/my_folder/my_video.mp4
@@ -194,13 +195,23 @@ const deleteVideoById = asyncHandler(async (req, res) => {
     );
   }
 
-  //delete all comment and likes associated with this video
-  await Like.deleteMany({ video: videoId });
-  await Comment.deleteMany({ video: videoId });
-  // delete all likes associted with this comment
-  // await Like.deleteMany({ ??});
+  //-----delete all other properties associated with this video -------
+  // 1st : Find all comments of this video
+  const comments = await Comment.find({ video: videoId }).select("_id");
 
-  // Delete video document from database
+  // 2nd : Delete all likes associated with these comments
+  const commentIds = comments.map((c) => c._id);
+  if (commentIds.length > 0) {
+    await Like.deleteMany({ comment: { $in: commentIds } });
+  }
+
+  //3rd: Delete likes associated directly with the video
+  await Like.deleteMany({ video: videoId });
+
+  //4th: Delete all comments associated with the post
+  await Comment.deleteMany({ video: videoId });
+
+  //5th: Delete video document from database
   const deletedVideo = await video.deleteOne();
   if (!deletedVideo) {
     throw new ApiError(500, "Failed to delete video");

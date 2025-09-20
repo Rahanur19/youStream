@@ -83,12 +83,25 @@ const deletePostById = asyncHandler(async (req, res) => {
   if (post.owner.toString() !== req.user._id.toString()) {
     throw new ApiError(403, "You are not authorized to delete this post");
   }
-  await post.deleteOne();
-  // Also delete all likes and comments associated with this post
+  //-----delete all other properties associated with this post -------
+  // 1st : Find all comments of this post
+  const comments = await Comment.find({ communityPost: postId }).select("_id");
+
+  // 2nd : Delete all likes associated with these comments
+  const commentIds = comments.map((c) => c._id);
+  if (commentIds.length > 0) {
+    await Like.deleteMany({ comment: { $in: commentIds } });
+  }
+
+  //3rd: Delete likes associated directly with the post
   await Like.deleteMany({ communityPost: postId });
+
+  //4th: Delete all comments associated with the post
   await Comment.deleteMany({ communityPost: postId });
-  // delete all likes associted with this comment
-  // await Like.deleteMany({ ??});
+
+  //5th: Finally, delete the post itself
+  await post.deleteOne();
+
   res
     .status(200)
     .json(new ApiResponse(200, "Community post deleted successfully", null));
