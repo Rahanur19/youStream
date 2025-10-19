@@ -5,7 +5,7 @@ const cors = require("cors");
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "*",
+    origin: process.env.CORS_ORIGIN || "https://youstream.onrender.com",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     // credentials: true,
   })
