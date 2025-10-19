@@ -5,10 +5,9 @@ const { app } = require("./app");
 // Connect to MongoDB
 connectDB()
   .then(() => {
-    app.listen(process.env.PORT, () => {
-      console.log(
-        `Server is running on port http://localhost:${process.env.PORT}`
-      );
+    const PORT = process.env.PORT || 8000;
+    app.listen(PORT, () => {
+      console.log(`Server is running on port http://localhost:${PORT}`);
     });
   })
   .catch((error) => {

@@ -72,7 +72,7 @@ const getAllComments = asyncHandler(async (req, res) => {
   const communityPost = await communityPostModel.findOne({ _id: contentId });
 
   if (!video && !communityPost) {
-    throw ApiError(404, "No video or community post found with the id");
+    throw new ApiError(404, "No video or community post found with the id");
   }
 
   const comments = await Comment.find({

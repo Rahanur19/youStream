@@ -1,0 +1,245 @@
+openapi: 3.0.0
+info:
+  title: youStream Likes
+  version: 1.0.0
+paths:
+  /api/v1/likes/video/{videoId}:
+    post:
+      summary: Toggle like for a video
+      tags:
+        - Likes
+      parameters:
+        - in: path
+          name: videoId
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Toggled like
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  liked:
+                    type: boolean
+                example:
+                  liked: true
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+              examples:
+                unauthorized:
+                  value:
+                    statusCode: 401
+                    message: "Authentication required"
+    get:
+      summary: Get like count for a video
+      tags:
+        - Likes
+      parameters:
+        - in: path
+          name: videoId
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Like count
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                example:
+                  count: 42
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+              examples:
+                notFound:
+                  value:
+                    statusCode: 404
+                    message: "Video not found"
+  /api/v1/likes/comment/{commentId}:
+    post:
+      summary: Toggle like for a comment
+      tags:
+        - Likes
+      parameters:
+        - in: path
+          name: commentId
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Toggled like
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  liked:
+                    type: boolean
+                example:
+                  liked: true
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+              examples:
+                unauthorized:
+                  value:
+                    statusCode: 401
+                    message: "Authentication required"
+    get:
+      summary: Get like count for a comment
+      tags:
+        - Likes
+      parameters:
+        - in: path
+          name: commentId
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Like count
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                example:
+                  count: 3
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+              examples:
+                notFound:
+                  value:
+                    statusCode: 404
+                    message: "Comment not found"
+  /api/v1/likes/community-post/{communityPostId}:
+    post:
+      summary: Toggle like for a community post
+      tags:
+        - Likes
+      parameters:
+        - in: path
+          name: communityPostId
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Toggled like
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  liked:
+                    type: boolean
+                example:
+                  liked: true
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+              examples:
+                unauthorized:
+                  value:
+                    statusCode: 401
+                    message: "Authentication required"
+    get:
+      summary: Get like count for a community post
+      tags:
+        - Likes
+      parameters:
+        - in: path
+          name: communityPostId
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Like count
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                example:
+                  count: 7
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+              examples:
+                notFound:
+                  value:
+                    statusCode: 404
+                    message: "Community post not found"
+  /api/v1/likes/liked-videos:
+    get:
+      summary: Get all liked videos of the current user
+      tags:
+        - Likes
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of liked videos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Video"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+              examples:
+                unauthorized:
+                  value:
+                    statusCode: 401
+                    message: "Authentication required"

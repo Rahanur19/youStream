@@ -1,0 +1,262 @@
+openapi: 3.0.0
+info:
+  title: youStream Playlists
+  version: 1.0.0
+paths:
+  /api/v1/playlists/create-playlist:
+    post:
+      summary: Create a new playlist
+      tags:
+        - Playlists
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+      responses:
+        "201":
+          description: Playlist created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Playlist"
+              examples:
+                sample:
+                  value:
+                    _id: "64d..."
+                    name: "My playlist"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/v1/playlists/all-playlists:
+    get:
+      summary: Get all playlists for user
+      tags:
+        - Playlists
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of playlists
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Playlist"
+              examples:
+                sample:
+                  value:
+                    - _id: "64d..."
+                      name: "Favorites"
+                    - _id: "64d..."
+                      name: "Watch later"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/v1/playlists/playlist/{playlistId}:
+    get:
+      summary: Get playlist by ID
+      tags:
+        - Playlists
+      parameters:
+        - in: path
+          name: playlistId
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Playlist details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Playlist"
+              examples:
+                sample:
+                  value:
+                    _id: "64d..."
+                    name: "Favorites"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/v1/playlists/update-playlist/{playlistId}:
+    put:
+      summary: Update playlist by ID
+      tags:
+        - Playlists
+      parameters:
+        - in: path
+          name: playlistId
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+      responses:
+        "200":
+          description: Playlist updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Playlist"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/v1/playlists/delete-playlist/{playlistId}:
+    delete:
+      summary: Delete playlist by ID
+      tags:
+        - Playlists
+      parameters:
+        - in: path
+          name: playlistId
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Playlist deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/v1/playlists/add-video/{playlistId}:
+    post:
+      summary: Add video to playlist
+      tags:
+        - Playlists
+      parameters:
+        - in: path
+          name: playlistId
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                videoId:
+                  type: string
+      responses:
+        "200":
+          description: Video added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Playlist"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/v1/playlists/remove-video/{playlistId}/{videoId}:
+    post:
+      summary: Remove video from playlist
+      tags:
+        - Playlists
+      parameters:
+        - in: path
+          name: playlistId
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: videoId
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Video removed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Playlist"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"

@@ -1,0 +1,143 @@
+openapi: 3.0.0
+info:
+  title: youStream Components
+  version: 1.0.0
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+        userName:
+          type: string
+        email:
+          type: string
+        fullName:
+          type: string
+        avatar:
+          type: string
+        coverImage:
+          type: string
+        watchHistory:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    Video:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        videoFile:
+          type: string
+        thumbnail:
+          type: string
+        duration:
+          type: number
+        views:
+          type: integer
+        isPublished:
+          type: boolean
+        owner:
+          $ref: "#/components/schemas/User"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    Comment:
+      type: object
+      properties:
+        _id:
+          type: string
+        content:
+          type: string
+        video:
+          $ref: "#/components/schemas/Video"
+        communityPost:
+          $ref: "#/components/schemas/CommunityPost"
+        owner:
+          $ref: "#/components/schemas/User"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    Playlist:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        videos:
+          type: array
+          items:
+            $ref: "#/components/schemas/Video"
+        owner:
+          $ref: "#/components/schemas/User"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    CommunityPost:
+      type: object
+      properties:
+        _id:
+          type: string
+        content:
+          type: string
+        owner:
+          $ref: "#/components/schemas/User"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    TokenResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+    ApiError:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              issue:
+                type: string
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string

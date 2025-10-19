@@ -23,6 +23,10 @@ const playlistRoutes = require("./routes/playlist.routes.js");
 const subscriptionRoutes = require("./routes/subscription.routes.js");
 const comments = require("./routes/comment.routes.js");
 
+// Swagger
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./swagger");
+
 //routes
 app.use("/api/v1/videos", videoRoutes);
 app.use("/api/v1/users", userRoutes);
@@ -31,5 +35,9 @@ app.use("/api/v1/community-posts", communityPostRoutes);
 app.use("/api/v1/playlists", playlistRoutes);
 app.use("/api/v1/subscriptions", subscriptionRoutes);
 app.use("/api/v1/comments", comments);
+
+// Serve swagger docs
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get("/api/docs.json", (req, res) => res.json(swaggerSpec));
 
 module.exports = { app };

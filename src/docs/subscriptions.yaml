@@ -1,0 +1,94 @@
+openapi: 3.0.0
+info:
+  title: youStream Subscriptions
+  version: 1.0.0
+paths:
+  /api/v1/subscriptions/toggle-subscription/{channelId}:
+    post:
+      summary: Subscribe/unsubscribe to a channel
+      tags:
+        - Subscriptions
+      parameters:
+        - in: path
+          name: channelId
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Toggled subscription
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  subscribed:
+                    type: boolean
+                example:
+                  subscribed: true
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/v1/subscriptions/all-subscriptions:
+    get:
+      summary: Get all subscriptions for current user
+      tags:
+        - Subscriptions
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of subscriptions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+              examples:
+                sample:
+                  value:
+                    - _id: "64b..."
+                      userName: "creator1"
+                    - _id: "64b..."
+                      userName: "creator2"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/v1/subscriptions/all-subscribers:
+    get:
+      summary: Get all subscribers for current user's channel
+      tags:
+        - Subscriptions
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of subscribers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+              examples:
+                sample:
+                  value:
+                    - _id: "64b..."
+                      userName: "fan1"
+                    - _id: "64b..."
+                      userName: "fan2"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"

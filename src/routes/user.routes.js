@@ -28,17 +28,14 @@ router.post(
   ]),
   userRegister
 );
-
 router.post("/login", userLogin);
-
-//secured routes
 router.post("/logout", verifyJWT, userLogout);
 router.post("/refresh-token", verifyJWT, resetAccessToken);
 router.post("/change-password", verifyJWT, changePassword);
 router.get("/current-user", verifyJWT, getCurrentUser);
 router.patch("/update-profile", verifyJWT, updateUserProfile);
 router.patch(
-  "update-avatar",
+  "/update-avatar",
   upload.single("avatar"),
   verifyJWT,
   updateUserAvatar
@@ -49,7 +46,6 @@ router.patch(
   verifyJWT,
   updateUserAvatar
 );
-
 router.get("/channel/:userName", verifyJWT, getChannelDetails);
 router.get("/watch-history", verifyJWT, getWatchHistory);
 module.exports = router;

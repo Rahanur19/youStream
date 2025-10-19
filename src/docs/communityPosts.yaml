@@ -1,0 +1,190 @@
+openapi: 3.0.0
+info:
+  title: youStream Community Posts
+  version: 1.0.0
+paths:
+  /api/v1/community-posts/create-post:
+    post:
+      summary: Create a community post
+      tags:
+        - CommunityPosts
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+      responses:
+        "201":
+          description: Post created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommunityPost"
+              examples:
+                sample:
+                  value:
+                    _id: "64e..."
+                    content: "Hello everyone"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/v1/community-posts/all-posts:
+    get:
+      summary: Get all community posts
+      tags:
+        - CommunityPosts
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CommunityPost"
+              examples:
+                sample:
+                  value:
+                    - _id: "64e..."
+                      content: "Hello everyone"
+                    - _id: "64e..."
+                      content: "Update: new features"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/v1/community-posts/post/{postId}:
+    get:
+      summary: Get a community post by ID
+      tags:
+        - CommunityPosts
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Post details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommunityPost"
+              examples:
+                sample:
+                  value:
+                    _id: "64e..."
+                    content: "Hello everyone"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/v1/community-posts/update-post/{postId}:
+    put:
+      summary: Update a community post
+      tags:
+        - CommunityPosts
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+      responses:
+        "200":
+          description: Post updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommunityPost"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/v1/community-posts/delete-post/{postId}:
+    delete:
+      summary: Delete a community post
+      tags:
+        - CommunityPosts
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Post deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
