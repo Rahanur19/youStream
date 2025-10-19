@@ -10,7 +10,8 @@ const generateAccessRefreshToken = async (id) => {
     user.refreshToken = refreshToken;
     await user.save({ validationBeforeSave: false });
 
-    return { accessToken, refreshToken };
+    // return both names for compatibility: callers expect either 'refreshToken' or 'newRefreshToken'
+    return { accessToken, refreshToken, newRefreshToken: refreshToken };
   } catch (error) {
     throw new ApiError(
       501,

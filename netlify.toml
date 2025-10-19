@@ -1,5 +1,5 @@
 [build]
-  command = "npm run docs:export"
+  command = "npm ci && npm run docs:export"
   publish = "public"
   functions = "netlify/functions"
 

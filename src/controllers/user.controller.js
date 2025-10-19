@@ -9,26 +9,14 @@ const {
   generateAccessRefreshToken,
 } = require("../utils/generateAccessRefreshToken.js");
 
+// cookie options: secure and sameSite should be relaxed in development so browsers accept them
 const options = {
   httpOnly: true,
-  secure: true,
-  // secure: process.env.NODE_ENV === "production",
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
 };
 
 const userRegister = asyncHandler(async (req, res) => {
-  //take the data from user
-  //validate if the any of them blank or not
-  //check if the user is already existed or not with that email or username
-  //check if the avatar empty or not
-  //save file in local using multer
-  //upload files in cloud
-  //get return value of uploaded files
-  //check there - avatar info presented or not
-  //final modification of user data
-  //create user
-  //get that user using _id
-  //final - api response
-
   const { fullName, userName, email, password } = req.body;
 
   if (
@@ -47,8 +35,10 @@ const userRegister = asyncHandler(async (req, res) => {
     throw new ApiError(409, "User already exists with given username or email");
   }
 
-  const avatarLocal = req.files.avatar ? req.files.avatar[0].path : null;
-  const coverLocal = req.files.coverImage ? req.files.coverImage[0].path : null;
+  const avatarLocal = req.files?.avatar ? req.files.avatar[0].path : null;
+  const coverLocal = req.files?.coverImage
+    ? req.files.coverImage[0].path
+    : null;
 
   if (!avatarLocal) {
     throw new ApiError(400, "Avatar image is required");
@@ -86,6 +76,9 @@ const userRegister = asyncHandler(async (req, res) => {
 
 const userLogin = asyncHandler(async (req, res) => {
   const { email, userName, password } = req.body;
+  // tokenOnly can be passed as boolean in body or as query string tokenOnly=true
+  const tokenOnly =
+    req.body?.tokenOnly === true || String(req.query?.tokenOnly) === "true";
 
   if (!email && !userName) {
     throw new ApiError(400, "Email or username is required");
@@ -111,6 +104,7 @@ const userLogin = asyncHandler(async (req, res) => {
     user._id
   );
 
+  // ensure user's refresh token is persisted
   user.refreshToken = refreshToken;
   await user.save({ validationBeforeSave: false });
 
@@ -118,6 +112,18 @@ const userLogin = asyncHandler(async (req, res) => {
     "-password -refreshToken"
   );
 
+  // If client asked for token-only (useful for cross-origin frontends), return tokens in JSON
+  if (tokenOnly) {
+    return res.status(200).json(
+      new ApiResponse(200, "User logged in successfully", {
+        user: loggedInUser,
+        accessToken,
+        refreshToken,
+      })
+    );
+  }
+
+  // Default behavior: set cookies
   res
     .status(200)
     .cookie("refreshToken", refreshToken, options)
@@ -169,27 +175,30 @@ const resetAccessToken = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Invalid token, user not found");
   }
 
-  console.log("incomingRefreshToken", incomingRefreshToken);
-  console.log("user.refreshToken", user.refreshToken);
-
   if (incomingRefreshToken !== user.refreshToken) {
     throw new ApiError(401, "Unauthorized access, invalid refresh token");
   }
 
-  const { accessToken, newRefreshToken } = await generateAccessRefreshToken(
-    user._id
-  );
+  const {
+    accessToken,
+    newRefreshToken,
+    refreshToken: returnedRefresh,
+  } = await generateAccessRefreshToken(user._id);
 
-  // user.refreshToken = refreshToken;
+  // update user refresh token if generator didn't already persist it
+  if (returnedRefresh && returnedRefresh !== user.refreshToken) {
+    user.refreshToken = returnedRefresh;
+    await user.save({ validationBeforeSave: false });
+  }
 
   res
     .status(200)
     .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", newRefreshToken, options)
+    .cookie("refreshToken", newRefreshToken || returnedRefresh || "", options)
     .json(
       new ApiResponse(200, "Access token refreshed successfully", {
         accessToken,
-        refreshToken: newRefreshToken,
+        refreshToken: newRefreshToken || returnedRefresh,
       })
     );
 });

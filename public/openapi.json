@@ -223,16 +223,14 @@
   },
   "servers": [
     {
-      "url": "http://localhost:5000"
+      "url": ""
     }
   ],
   "paths": {
     "/api/v1/videos/all-videos": {
       "get": {
         "summary": "Get all videos",
-        "tags": [
-          "Videos"
-        ],
+        "tags": ["Videos"],
         "security": [
           {
             "bearerAuth": []
@@ -284,9 +282,7 @@
     "/api/v1/videos/{videoId}": {
       "get": {
         "summary": "Get a video by ID",
-        "tags": [
-          "Videos"
-        ],
+        "tags": ["Videos"],
         "parameters": [
           {
             "in": "path",
@@ -348,9 +344,7 @@
     "/api/v1/videos/upload-video": {
       "post": {
         "summary": "Upload a new video",
-        "tags": [
-          "Videos"
-        ],
+        "tags": ["Videos"],
         "security": [
           {
             "bearerAuth": []
@@ -419,9 +413,7 @@
     "/api/v1/videos/update-video/{videoId}": {
       "put": {
         "summary": "Update a video by ID",
-        "tags": [
-          "Videos"
-        ],
+        "tags": ["Videos"],
         "parameters": [
           {
             "in": "path",
@@ -500,9 +492,7 @@
     "/api/v1/videos/delete-video/{videoId}": {
       "delete": {
         "summary": "Delete a video by ID",
-        "tags": [
-          "Videos"
-        ],
+        "tags": ["Videos"],
         "parameters": [
           {
             "in": "path",
@@ -555,9 +545,7 @@
     "/api/v1/videos/toggle-publish/{videoId}": {
       "patch": {
         "summary": "Toggle publish status of a video",
-        "tags": [
-          "Videos"
-        ],
+        "tags": ["Videos"],
         "parameters": [
           {
             "in": "path",
@@ -610,9 +598,7 @@
     "/api/v1/users/register": {
       "post": {
         "summary": "Register a new user",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "requestBody": {
           "required": true,
           "content": {
@@ -678,9 +664,7 @@
     "/api/v1/users/login": {
       "post": {
         "summary": "Login user and return JWT",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "requestBody": {
           "required": true,
           "content": {
@@ -734,9 +718,7 @@
     "/api/v1/users/logout": {
       "post": {
         "summary": "Logout the current user",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "security": [
           {
             "bearerAuth": []
@@ -769,9 +751,7 @@
     "/api/v1/users/refresh-token": {
       "post": {
         "summary": "Refresh access token",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "security": [
           {
             "bearerAuth": []
@@ -804,9 +784,7 @@
     "/api/v1/users/change-password": {
       "post": {
         "summary": "Change password for authenticated user",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "security": [
           {
             "bearerAuth": []
@@ -857,9 +835,7 @@
     "/api/v1/users/current-user": {
       "get": {
         "summary": "Get current authenticated user",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "security": [
           {
             "bearerAuth": []
@@ -892,9 +868,7 @@
     "/api/v1/users/update-profile": {
       "patch": {
         "summary": "Update user profile",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "security": [
           {
             "bearerAuth": []
@@ -928,9 +902,7 @@
     "/api/v1/users/update-avatar": {
       "patch": {
         "summary": "Update user avatar",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "security": [
           {
             "bearerAuth": []
@@ -962,9 +934,7 @@
     "/api/v1/users/update-cover-image": {
       "patch": {
         "summary": "Update user cover image",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "security": [
           {
             "bearerAuth": []
@@ -996,9 +966,7 @@
     "/api/v1/users/channel/{userName}": {
       "get": {
         "summary": "Get channel details by username",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "parameters": [
           {
             "in": "path",
@@ -1024,9 +992,7 @@
     "/api/v1/users/watch-history": {
       "get": {
         "summary": "Get watch history for current user",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "security": [
           {
             "bearerAuth": []
@@ -1042,9 +1008,7 @@
     "/api/v1/subscriptions/toggle-subscription/{channelId}": {
       "post": {
         "summary": "Subscribe/unsubscribe to a channel",
-        "tags": [
-          "Subscriptions"
-        ],
+        "tags": ["Subscriptions"],
         "parameters": [
           {
             "in": "path",
@@ -1095,9 +1059,7 @@
     "/api/v1/subscriptions/all-subscriptions": {
       "get": {
         "summary": "Get all subscriptions for current user",
-        "tags": [
-          "Subscriptions"
-        ],
+        "tags": ["Subscriptions"],
         "security": [
           {
             "bearerAuth": []
@@ -1147,9 +1109,7 @@
     "/api/v1/subscriptions/all-subscribers": {
       "get": {
         "summary": "Get all subscribers for current user's channel",
-        "tags": [
-          "Subscriptions"
-        ],
+        "tags": ["Subscriptions"],
         "security": [
           {
             "bearerAuth": []
@@ -1199,9 +1159,7 @@
     "/api/v1/playlists/create-playlist": {
       "post": {
         "summary": "Create a new playlist",
-        "tags": [
-          "Playlists"
-        ],
+        "tags": ["Playlists"],
         "security": [
           {
             "bearerAuth": []
@@ -1267,9 +1225,7 @@
     "/api/v1/playlists/all-playlists": {
       "get": {
         "summary": "Get all playlists for user",
-        "tags": [
-          "Playlists"
-        ],
+        "tags": ["Playlists"],
         "security": [
           {
             "bearerAuth": []
@@ -1319,9 +1275,7 @@
     "/api/v1/playlists/playlist/{playlistId}": {
       "get": {
         "summary": "Get playlist by ID",
-        "tags": [
-          "Playlists"
-        ],
+        "tags": ["Playlists"],
         "parameters": [
           {
             "in": "path",
@@ -1382,9 +1336,7 @@
     "/api/v1/playlists/update-playlist/{playlistId}": {
       "put": {
         "summary": "Update playlist by ID",
-        "tags": [
-          "Playlists"
-        ],
+        "tags": ["Playlists"],
         "parameters": [
           {
             "in": "path",
@@ -1452,9 +1404,7 @@
     "/api/v1/playlists/delete-playlist/{playlistId}": {
       "delete": {
         "summary": "Delete playlist by ID",
-        "tags": [
-          "Playlists"
-        ],
+        "tags": ["Playlists"],
         "parameters": [
           {
             "in": "path",
@@ -1507,9 +1457,7 @@
     "/api/v1/playlists/add-video/{playlistId}": {
       "post": {
         "summary": "Add video to playlist",
-        "tags": [
-          "Playlists"
-        ],
+        "tags": ["Playlists"],
         "parameters": [
           {
             "in": "path",
@@ -1577,9 +1525,7 @@
     "/api/v1/playlists/remove-video/{playlistId}/{videoId}": {
       "post": {
         "summary": "Remove video from playlist",
-        "tags": [
-          "Playlists"
-        ],
+        "tags": ["Playlists"],
         "parameters": [
           {
             "in": "path",
@@ -1640,9 +1586,7 @@
     "/api/v1/likes/video/{videoId}": {
       "post": {
         "summary": "Toggle like for a video",
-        "tags": [
-          "Likes"
-        ],
+        "tags": ["Likes"],
         "parameters": [
           {
             "in": "path",
@@ -1699,9 +1643,7 @@
       },
       "get": {
         "summary": "Get like count for a video",
-        "tags": [
-          "Likes"
-        ],
+        "tags": ["Likes"],
         "parameters": [
           {
             "in": "path",
@@ -1760,9 +1702,7 @@
     "/api/v1/likes/comment/{commentId}": {
       "post": {
         "summary": "Toggle like for a comment",
-        "tags": [
-          "Likes"
-        ],
+        "tags": ["Likes"],
         "parameters": [
           {
             "in": "path",
@@ -1819,9 +1759,7 @@
       },
       "get": {
         "summary": "Get like count for a comment",
-        "tags": [
-          "Likes"
-        ],
+        "tags": ["Likes"],
         "parameters": [
           {
             "in": "path",
@@ -1880,9 +1818,7 @@
     "/api/v1/likes/community-post/{communityPostId}": {
       "post": {
         "summary": "Toggle like for a community post",
-        "tags": [
-          "Likes"
-        ],
+        "tags": ["Likes"],
         "parameters": [
           {
             "in": "path",
@@ -1939,9 +1875,7 @@
       },
       "get": {
         "summary": "Get like count for a community post",
-        "tags": [
-          "Likes"
-        ],
+        "tags": ["Likes"],
         "parameters": [
           {
             "in": "path",
@@ -2000,9 +1934,7 @@
     "/api/v1/likes/liked-videos": {
       "get": {
         "summary": "Get all liked videos of the current user",
-        "tags": [
-          "Likes"
-        ],
+        "tags": ["Likes"],
         "security": [
           {
             "bearerAuth": []
@@ -2046,9 +1978,7 @@
     "/api/v1/community-posts/create-post": {
       "post": {
         "summary": "Create a community post",
-        "tags": [
-          "CommunityPosts"
-        ],
+        "tags": ["CommunityPosts"],
         "security": [
           {
             "bearerAuth": []
@@ -2114,9 +2044,7 @@
     "/api/v1/community-posts/all-posts": {
       "get": {
         "summary": "Get all community posts",
-        "tags": [
-          "CommunityPosts"
-        ],
+        "tags": ["CommunityPosts"],
         "security": [
           {
             "bearerAuth": []
@@ -2166,9 +2094,7 @@
     "/api/v1/community-posts/post/{postId}": {
       "get": {
         "summary": "Get a community post by ID",
-        "tags": [
-          "CommunityPosts"
-        ],
+        "tags": ["CommunityPosts"],
         "parameters": [
           {
             "in": "path",
@@ -2229,9 +2155,7 @@
     "/api/v1/community-posts/update-post/{postId}": {
       "put": {
         "summary": "Update a community post",
-        "tags": [
-          "CommunityPosts"
-        ],
+        "tags": ["CommunityPosts"],
         "parameters": [
           {
             "in": "path",
@@ -2309,9 +2233,7 @@
     "/api/v1/community-posts/delete-post/{postId}": {
       "delete": {
         "summary": "Delete a community post",
-        "tags": [
-          "CommunityPosts"
-        ],
+        "tags": ["CommunityPosts"],
         "parameters": [
           {
             "in": "path",
@@ -2364,9 +2286,7 @@
     "/api/v1/comments/create-comment/{videoIdOrCommunnityPostId}": {
       "post": {
         "summary": "Create a comment for a video or community post",
-        "tags": [
-          "Comments"
-        ],
+        "tags": ["Comments"],
         "parameters": [
           {
             "in": "path",
@@ -2442,9 +2362,7 @@
     "/api/v1/comments/delete-comment/{commentId}": {
       "delete": {
         "summary": "Delete a comment by ID",
-        "tags": [
-          "Comments"
-        ],
+        "tags": ["Comments"],
         "parameters": [
           {
             "in": "path",
@@ -2497,9 +2415,7 @@
     "/api/v1/comments/all-comments/{videoIdOrCommunnityPostId}": {
       "get": {
         "summary": "Get all comments for a video or community post",
-        "tags": [
-          "Comments"
-        ],
+        "tags": ["Comments"],
         "parameters": [
           {
             "in": "path",
@@ -2559,9 +2475,7 @@
     "/api/v1/comments/update-comment/{commentId}": {
       "put": {
         "summary": "Update a comment by ID",
-        "tags": [
-          "Comments"
-        ],
+        "tags": ["Comments"],
         "parameters": [
           {
             "in": "path",
@@ -2639,9 +2553,7 @@
     "/api/v1/comments/comment/{commentId}": {
       "get": {
         "summary": "Get a comment by ID",
-        "tags": [
-          "Comments"
-        ],
+        "tags": ["Comments"],
         "parameters": [
           {
             "in": "path",
