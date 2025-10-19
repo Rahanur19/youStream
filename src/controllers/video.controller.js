@@ -7,22 +7,23 @@ const Like = require("../models/like.model.js");
 const cloudinaryFileUp = require("../utils/cloudinaryFileUp.js");
 const cloudinaryFileDeleteById = require("../utils/cloudinaryFileDeleteById.js");
 const { single } = require("../middlewares/multer.middleware.js");
+const { extractPublicIdFromUrl } = require("../utils/extractUrl.js");
 
 // Function to extract public_id from Cloudinary URL
 // Example URL: https://res.cloudinary.com/<cloud_name>/video/upload/v1699999999/my_folder/my_video.mp4
 // Extracted public_id: my_folder/my_video
 
-function extractPublicIdFromUrl(url) {
-  try {
-    const matches = url.match(/upload\/v\d+\/(.+)\.(\w+)$/);
-    if (!matches || matches.length < 2) return null;
+// function extractPublicIdFromUrl(url) {
+//   try {
+//     const matches = url.match(/upload\/v\d+\/(.+)\.(\w+)$/);
+//     if (!matches || matches.length < 2) return null;
 
-    return matches[1]; // this is the public_id
-  } catch (err) {
-    console.error("Failed to extract public_id:", err);
-    return null;
-  }
-}
+//     return matches[1]; // this is the public_id
+//   } catch (err) {
+//     console.error("Failed to extract public_id:", err);
+//     return null;
+//   }
+// }
 
 const getAllVideos = asyncHandler(async (req, res) => {
   if (!req.user._id) {
@@ -54,10 +55,11 @@ const getVideoById = asyncHandler(async (req, res) => {
 });
 
 const createVideo = asyncHandler(async (req, res) => {
-  const videoLocal = req.files.video ? req.files.video[0].path : null;
-  const thumbnailLocal = req.files.thumbnail
-    ? req.files.thumbnail[0].path
-    : null;
+  // const videoLocal = req.files.video ? req.files.video[0].path : null;
+  const videoFile = req.files.video ? req.files.video[0] : null;
+
+  // const thumbnailLocal = req.files.thumbnail ? req.files.thumbnail[0].path : null;
+  const thumbnailFile = req.files.thumbnail ? req.files.thumbnail[0] : null;
 
   const title = req.body.title;
   const description = req.body.description;
@@ -66,12 +68,15 @@ const createVideo = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Title and description are required");
   }
 
-  if (!videoLocal || !thumbnailLocal) {
+  if (!videoFile || !thumbnailFile) {
     throw new ApiError(400, "Video and thumbnail are required");
   }
 
-  const video = await cloudinaryFileUp(videoLocal, "videos");
-  const thumbnail = await cloudinaryFileUp(thumbnailLocal, "thumbnails");
+  // const video = await cloudinaryFileUp(videoLocal, "videos");
+  const video = await cloudinaryFileUp(videoFile, "videos");
+
+  // const thumbnail = await cloudinaryFileUp(thumbnailLocal, "thumbnails");
+  const thumbnail = await cloudinaryFileUp(thumbnailFile, "thumbnails");
 
   if (!video || !thumbnail) {
     throw new ApiError(500, "Failed to upload video or thumbnail");
@@ -82,8 +87,10 @@ const createVideo = asyncHandler(async (req, res) => {
   const newVideo = {
     title,
     description,
-    videoFile: video.url,
-    thumbnail: thumbnail.url,
+    // videoFile: video.url,
+    videoFile: video.secure_url,
+    // thumbnail: thumbnail.url,
+    thumbnail: thumbnail.secure_url,
     duration,
     owner: req.user._id,
   };
@@ -100,7 +107,6 @@ const createVideo = asyncHandler(async (req, res) => {
 });
 
 const updateVideoById = asyncHandler(async (req, res) => {
-  //   res.send("Update video endpoint is under construction");
   const videoId = req.params.videoId;
   if (!videoId) {
     throw new ApiError(400, "Video ID is required");
@@ -112,15 +118,16 @@ const updateVideoById = asyncHandler(async (req, res) => {
   if (video.owner.toString() !== req.user._id.toString()) {
     throw new ApiError(403, "You are not authorized to update this video");
   }
-  // Update fields
+
   const { title, description } = req.body;
   if (title) video.title = title;
   if (description) video.description = description;
 
   // Handle file uploads if any -- for video
   if (req.files.video) {
-    const videoLocal = req.files.video[0].path;
-    const uploadedVideo = await cloudinaryFileUp(videoLocal, "videos");
+    // const videoLocal = req.files.video[0].path;
+    const videoFile = req.files.video[0];
+    const uploadedVideo = await cloudinaryFileUp(videoFile, "videos");
     if (uploadedVideo) {
       // Delete the old video from cloudinary
       const videoPublicId = extractPublicIdFromUrl(video.videoFile);
@@ -130,16 +137,18 @@ const updateVideoById = asyncHandler(async (req, res) => {
           console.error("Failed to delete old video from Cloudinary");
         }
       }
-      video.videoFile = uploadedVideo.url;
+      // video.videoFile = uploadedVideo.url;
+      video.videoFile = uploadedVideo.secure_url;
       video.duration = uploadedVideo.duration;
     }
   }
 
   // Handle file uploads if any -- for thumbnail
   if (req.files.thumbnail) {
-    const thumbnailLocal = req.files.thumbnail[0].path;
+    // const thumbnailLocal = req.files.thumbnail[0].path;
+    const thumbnailFile = req.files.thumbnail[0];
     const uploadedThumbnail = await cloudinaryFileUp(
-      thumbnailLocal,
+      thumbnailFile,
       "thumbnails"
     );
     if (uploadedThumbnail) {
@@ -153,10 +162,12 @@ const updateVideoById = asyncHandler(async (req, res) => {
         if (!deletedFile) {
           console.error("Failed to delete old thumbnail from Cloudinary");
         }
-        video.thumbnail = uploadedThumbnail.url;
       }
+      // video.thumbnail = uploadedThumbnail.url;
+      video.thumbnail = uploadedThumbnail.secure_url;
     }
   }
+
   // Save the updated video
   const updatedVideo = await video.save({ validationBeforeSave: false });
 

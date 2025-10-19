@@ -1,5 +1,5 @@
 const cloudinary = require("cloudinary").v2;
-const fs = require("fs");
+const streamifier = require("streamifier");
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -7,23 +7,21 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const cloudinaryFileUp = async (localFilePath) => {
-  try {
-    if (!localFilePath) return "No file path provided";
-    // upload the file to Cloudinary
-    const result = await cloudinary.uploader.upload(localFilePath, {
-      resource_type: "auto",
-    });
+const cloudinaryFileUp = async (file) => {
+  return new Promise((resolve, reject) => {
+    if (!file || !file.buffer) return reject("No file provided");
 
-    // file uploaded successfully
-    // console.log("file uploaded successfully : ", result.url);
-    fs.unlinkSync(localFilePath); // delete the file from local after upload
-    return result;
-  } catch (error) {
-    fs.unlinkSync(localFilePath); //delete the file from local if upload fails
-    console.error("Error uploading file to Cloudinary:", error);
-    return null;
-  }
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { resource_type: "auto", folder: "youstream" },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result); // result.secure_url contains the Cloudinary URL
+      }
+    );
+
+    // Convert buffer to readable stream and pipe to Cloudinary
+    streamifier.createReadStream(file.buffer).pipe(uploadStream);
+  });
 };
 
 module.exports = cloudinaryFileUp;

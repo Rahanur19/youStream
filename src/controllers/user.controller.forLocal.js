@@ -8,8 +8,6 @@ const cloudinaryFileUp = require("../utils/cloudinaryFileUp.js");
 const {
   generateAccessRefreshToken,
 } = require("../utils/generateAccessRefreshToken.js");
-const { extractPublicIdFromUrl } = require("../utils/extractUrl.js");
-const cloudinaryFileDeleteById = require("../utils/cloudinaryFileDeleteById.js");
 
 // cookie options: secure and sameSite should be relaxed in development so browsers accept them
 const options = {
@@ -37,16 +35,17 @@ const userRegister = asyncHandler(async (req, res) => {
     throw new ApiError(409, "User already exists with given username or email");
   }
 
-  // const avatarLocal = req.files?.avatar ? req.files.avatar[0].path : null;
-  const avatarFile = req.files?.avatar ? req.files.avatar[0] : null;
-  const coverFile = req.files?.coverImage ? req.files.coverImage[0] : null;
+  const avatarLocal = req.files?.avatar ? req.files.avatar[0].path : null;
+  const coverLocal = req.files?.coverImage
+    ? req.files.coverImage[0].path
+    : null;
 
-  if (!avatarFile) {
+  if (!avatarLocal) {
     throw new ApiError(400, "Avatar image is required");
   }
 
-  const avatar = await cloudinaryFileUp(avatarFile);
-  const cover = coverFile ? await cloudinaryFileUp(coverFile) : null;
+  const avatar = await cloudinaryFileUp(avatarLocal);
+  const cover = coverLocal ? await cloudinaryFileUp(coverLocal) : null;
 
   if (!avatar) {
     throw new ApiError(500, "Failed to upload avatar image");
@@ -57,9 +56,8 @@ const userRegister = asyncHandler(async (req, res) => {
     userName,
     email,
     password,
-    // avatar: avatar.url,
-    avatar: avatar.secure_url,
-    cover: cover ? cover.secure_url : "",
+    avatar: avatar.url,
+    cover: cover ? cover.url : "",
   };
 
   const user = await User.create(userData);
@@ -263,40 +261,23 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
 //To do by myself : delete previous avatar and cover image from cloudinary
 const updateUserAvatar = asyncHandler(async (req, res) => {
-  // const avatarLocal = req.file ? req.file.path : null;
-  const avatarFile = req.file ? req.file : null;
-  const previousAvatar = req.user.avatar;
-  const avatarPublicId = extractPublicIdFromUrl(previousAvatar);
+  const avatarLocal = req.file ? req.file.path : null;
 
-  if (!avatarFile) {
+  if (!avatarLocal) {
     throw new ApiError(400, "Avatar image is required");
   }
 
-  const avatar = await cloudinaryFileUp(avatarFile);
+  const avatar = await cloudinaryFileUp(avatarLocal);
 
-  if (!avatar.secure_url) {
+  if (!avatar.url) {
     throw new ApiError(500, "Failed to upload avatar image");
-  }
-
-  if (avatarPublicId) {
-    const deletedFile = cloudinaryFileDeleteById(avatarPublicId, "image");
-    if (!deletedFile) {
-      console.error("Failed to delete old avatar from Cloudinary");
-    }
   }
 
   const user = await User.findByIdAndUpdate(
     req.user._id,
-    { avatar: avatar.secure_url },
+    { avatar: avatar.url },
     { new: true }
   ).select("-password -refreshToken");
-
-  if (avatarPublicId) {
-    const deletedFile = cloudinaryFileDeleteById(avatarPublicId, "image");
-    if (!deletedFile) {
-      console.error("Failed to delete old avatar from Cloudinary");
-    }
-  }
 
   res
     .status(200)
@@ -304,33 +285,21 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 });
 
 const updateUserCoverImage = asyncHandler(async (req, res) => {
-  // const coverLocal = req.file ? req.file.path : null;
-  const coverFile = req.file ? req.file : null;
-  const previousCover = req.user.coverImage;
-  const coverPublicId = extractPublicIdFromUrl(previousCover);
+  const coverLocal = req.file ? req.file.path : null;
 
-  if (!coverFile) {
+  if (!coverLocal) {
     throw new ApiError(400, "Cover image is required");
   }
 
   const cover = await cloudinaryFileUp(coverLocal);
 
-  if (!cover.secure_url) {
+  if (!cover.url) {
     throw new ApiError(500, "Failed to upload cover image");
-  }
-
-  if (coverPublicId) {
-    const deletedFile = cloudinaryFileDeleteById(coverPublicId, "image");
-    if (!deletedFile) {
-      console.error(
-        "Failed to delete old cover from Cloudinary or no previous cover image"
-      );
-    }
   }
 
   const user = await User.findByIdAndUpdate(
     req.user._id,
-    { coverImage: cover.secure_url },
+    { coverImage: cover.url },
     { new: true }
   ).select("-password -refreshToken");
 
