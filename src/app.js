@@ -5,11 +5,13 @@ const cors = require("cors");
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "https://youstream.onrender.com",
+    origin: process.env.CORS_ORIGIN || "*",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    // credentials: true,
+    credentials: true,
   })
 );
+
+// app.use(cors());
 
 app.use(cookieParser({}));
 app.use(express.json({ limit: "24kb" }));

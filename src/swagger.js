@@ -1,3 +1,4 @@
+require("dotenv").config({ path: "./.env" });
 const swaggerJSDoc = require("swagger-jsdoc");
 const fs = require("fs");
 const path = require("path");
@@ -19,9 +20,17 @@ const options = {
         },
       },
     },
+    // Server URL for Swagger. Priority:
+    // 1. process.env.SWAGGER_SERVER_URL (explicit override)
+    // 2. production -> same-origin (empty string) so Swagger UI calls relative paths
+    // 3. development -> localhost with PORT
     servers: [
       {
-        url: `http://localhost:${process.env.PORT || 5000}`,
+        url:
+          process.env.SWAGGER_SERVER_URL ||
+          (process.env.NODE_ENV === "production"
+            ? ""
+            : `http://localhost:${process.env.PORT || 5040}`),
       },
     ],
   },

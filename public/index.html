@@ -21,11 +21,34 @@
     <div id="swagger-ui"></div>
     <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
     <script>
-      const ui = SwaggerUIBundle({
-        url: "/openapi.json",
-        dom_id: "#swagger-ui",
-        presets: [SwaggerUIBundle.presets.apis],
-      });
+      // Load the exported OpenAPI JSON at runtime, override servers to current origin
+      (async () => {
+        try {
+          const resp = await fetch("/openapi.json");
+          const spec = await resp.json();
+
+          // Ensure Swagger will call the same origin as the docs page
+          spec.servers = [{ url: window.location.origin }];
+
+          const ui = SwaggerUIBundle({
+            spec,
+            dom_id: "#swagger-ui",
+            presets: [SwaggerUIBundle.presets.apis],
+            // include credentials so Try-it will send cookies for same-origin auth
+            requestInterceptor: (req) => {
+              req.credentials = "include";
+              return req;
+            },
+          });
+        } catch (err) {
+          // fallback: initialize with the file path (older behavior)
+          SwaggerUIBundle({
+            url: "/openapi.json",
+            dom_id: "#swagger-ui",
+            presets: [SwaggerUIBundle.presets.apis],
+          });
+        }
+      })();
     </script>
   </body>
 </html>
