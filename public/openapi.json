@@ -223,7 +223,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:5020"
+      "url": "http://localhost:8080"
     }
   ],
   "paths": {
@@ -620,7 +620,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {
+                  "userName": {
+                    "type": "string"
+                  },
+                  "fullName": {
                     "type": "string"
                   },
                   "email": {
@@ -637,6 +640,14 @@
                     "type": "string",
                     "format": "binary"
                   }
+                }
+              },
+              "encoding": {
+                "avatar": {
+                  "contentType": "image/*"
+                },
+                "coverImage": {
+                  "contentType": "image/*"
                 }
               }
             }
@@ -655,6 +666,7 @@
                     "value": {
                       "_id": "64b...",
                       "userName": "johndoe",
+                      "fullName": "John Doe",
                       "email": "john@example.com"
                     }
                   }
@@ -907,7 +919,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {
+                  "fullName": {
                     "type": "string"
                   },
                   "bio": {
@@ -2060,8 +2072,15 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "title",
+                  "content"
+                ],
                 "properties": {
-                  "text": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "content": {
                     "type": "string"
                   }
                 }
@@ -2081,6 +2100,7 @@
                   "sample": {
                     "value": {
                       "_id": "64e...",
+                      "title": "Quick update",
                       "content": "Hello everyone"
                     }
                   }
@@ -2113,7 +2133,7 @@
     },
     "/api/v1/community-posts/all-posts": {
       "get": {
-        "summary": "Get all community posts",
+        "summary": "Get all community posts (recent first)",
         "tags": [
           "CommunityPosts"
         ],
@@ -2138,11 +2158,13 @@
                     "value": [
                       {
                         "_id": "64e...",
+                        "title": "Quick update",
                         "content": "Hello everyone"
                       },
                       {
                         "_id": "64e...",
-                        "content": "Update: new features"
+                        "title": "Update",
+                        "content": "New features"
                       }
                     ]
                   }
@@ -2228,7 +2250,7 @@
     },
     "/api/v1/community-posts/update-post/{postId}": {
       "put": {
-        "summary": "Update a community post",
+        "summary": "Update a community post (title and/or content)",
         "tags": [
           "CommunityPosts"
         ],
@@ -2254,7 +2276,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "text": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "content": {
                     "type": "string"
                   }
                 }
@@ -2274,7 +2299,7 @@
             }
           },
           "400": {
-            "description": "Validation error",
+            "description": "Validation error (e.g., no changes or missing fields)",
             "content": {
               "application/json": {
                 "schema": {

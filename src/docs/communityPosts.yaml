@@ -16,8 +16,13 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - title
+                - content
               properties:
-                text:
+                title:
+                  type: string
+                content:
                   type: string
       responses:
         "201":
@@ -30,6 +35,7 @@ paths:
                 sample:
                   value:
                     _id: "64e..."
+                    title: "Quick update"
                     content: "Hello everyone"
         "400":
           description: Validation error
@@ -45,7 +51,7 @@ paths:
                 $ref: "#/components/schemas/ApiError"
   /api/v1/community-posts/all-posts:
     get:
-      summary: Get all community posts
+      summary: Get all community posts (recent first)
       tags:
         - CommunityPosts
       security:
@@ -63,9 +69,11 @@ paths:
                 sample:
                   value:
                     - _id: "64e..."
+                      title: "Quick update"
                       content: "Hello everyone"
                     - _id: "64e..."
-                      content: "Update: new features"
+                      title: "Update"
+                      content: "New features"
         "401":
           description: Unauthorized
           content:
@@ -111,7 +119,7 @@ paths:
                 $ref: "#/components/schemas/ApiError"
   /api/v1/community-posts/update-post/{postId}:
     put:
-      summary: Update a community post
+      summary: Update a community post (title and/or content)
       tags:
         - CommunityPosts
       parameters:
@@ -129,7 +137,9 @@ paths:
             schema:
               type: object
               properties:
-                text:
+                title:
+                  type: string
+                content:
                   type: string
       responses:
         "200":
@@ -139,7 +149,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/CommunityPost"
         "400":
-          description: Validation error
+          description: Validation error (e.g., no changes or missing fields)
           content:
             application/json:
               schema:

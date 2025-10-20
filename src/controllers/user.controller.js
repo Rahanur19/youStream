@@ -45,11 +45,31 @@ const userRegister = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Avatar image is required");
   }
 
-  const avatar = await cloudinaryFileUp(avatarFile);
-  const cover = coverFile ? await cloudinaryFileUp(coverFile) : null;
+  // Upload avatar (required) and cover image (optional). Protect against missing buffers.
+  let avatar;
+  try {
+    if (!avatarFile || !avatarFile.buffer) {
+      throw new ApiError(
+        400,
+        "Avatar image is required and must be a valid file upload"
+      );
+    }
+    avatar = await cloudinaryFileUp(avatarFile);
+  } catch (err) {
+    // cloudinaryFileUp rejects with string or Error. Normalize.
+    const message = err?.message || err || "Failed to upload avatar image";
+    throw new ApiError(500, message);
+  }
 
-  if (!avatar) {
-    throw new ApiError(500, "Failed to upload avatar image");
+  let cover = null;
+  if (coverFile && coverFile.buffer) {
+    try {
+      cover = await cloudinaryFileUp(coverFile);
+    } catch (err) {
+      // If cover upload fails, log and continue without blocking registration.
+      console.error("Cover image upload failed:", err);
+      cover = null;
+    }
   }
 
   const userData = {

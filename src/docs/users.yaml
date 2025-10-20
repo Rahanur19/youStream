@@ -15,7 +15,9 @@ paths:
             schema:
               type: object
               properties:
-                name:
+                userName:
+                  type: string
+                fullName:
                   type: string
                 email:
                   type: string
@@ -27,6 +29,11 @@ paths:
                 coverImage:
                   type: string
                   format: binary
+            encoding:
+              avatar:
+                contentType: image/*
+              coverImage:
+                contentType: image/*
       responses:
         "201":
           description: User created
@@ -39,6 +46,7 @@ paths:
                   value:
                     _id: "64b..."
                     userName: "johndoe"
+                    fullName: "John Doe"
                     email: "john@example.com"
         "400":
           description: Validation error
@@ -46,6 +54,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiError"
+
   /api/v1/users/login:
     post:
       summary: Login user and return JWT
@@ -80,6 +89,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiError"
+
   /api/v1/users/logout:
     post:
       summary: Logout the current user
@@ -100,6 +110,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiError"
+
   /api/v1/users/refresh-token:
     post:
       summary: Refresh access token
@@ -120,6 +131,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiError"
+
   /api/v1/users/change-password:
     post:
       summary: Change password for authenticated user
@@ -151,6 +163,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiError"
+
   /api/v1/users/current-user:
     get:
       summary: Get current authenticated user
@@ -171,6 +184,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiError"
+
   /api/v1/users/update-profile:
     patch:
       summary: Update user profile
@@ -185,13 +199,14 @@ paths:
             schema:
               type: object
               properties:
-                name:
+                fullName:
                   type: string
                 bio:
                   type: string
       responses:
         "200":
           description: Profile updated
+
   /api/v1/users/update-avatar:
     patch:
       summary: Update user avatar
@@ -212,6 +227,7 @@ paths:
       responses:
         "200":
           description: Avatar updated
+
   /api/v1/users/update-cover-image:
     patch:
       summary: Update user cover image
@@ -232,6 +248,7 @@ paths:
       responses:
         "200":
           description: Cover image updated
+
   /api/v1/users/channel/{userName}:
     get:
       summary: Get channel details by username
@@ -248,6 +265,7 @@ paths:
       responses:
         "200":
           description: Channel details
+
   /api/v1/users/watch-history:
     get:
       summary: Get watch history for current user

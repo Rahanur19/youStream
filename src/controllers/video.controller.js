@@ -29,7 +29,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
   if (!req.user._id) {
     throw new ApiError(400, "User is not logged in");
   }
-  const videos = await Video.find().populate(
+  const videos = await Video.find({ owner: req.user._id }).populate(
     "owner",
     "fullName userName email avatar"
   );
