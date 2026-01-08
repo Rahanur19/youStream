@@ -1,6 +1,7 @@
 # youStream
 
 A professional video streaming platform built with Node.js, Express, and MongoDB. Features user authentication, video uploads, and secure access management.
+Live link : https://youstream.onrender.com/
 
 ## Features
 
